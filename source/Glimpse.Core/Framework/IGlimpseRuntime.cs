@@ -22,6 +22,10 @@ namespace Glimpse.Core.Framework
         /// </remarks>
         void BeginRequest();
 
+        void BeginRequest(IFrameworkProvider frameworkProvider);
+
+        IFrameworkProvider FrameworkProvider { get; }
+
         /// <summary>
         /// Ends the request.
         /// </summary>
@@ -30,6 +34,7 @@ namespace Glimpse.Core.Framework
         /// with the ASP.NET provider, this is wired to the <c>PostReleaseRequestState</c> method.
         /// </remarks>
         void EndRequest();
+        void EndRequest(IFrameworkProvider frameworkProvider);
 
         /// <summary>
         /// Executes the default resource.
@@ -54,6 +59,8 @@ namespace Glimpse.Core.Framework
         /// <seealso cref="Glimpse.Core.Extensibility.IResource"/>
         /// </remarks>
         void ExecuteResource(string resourceName, ResourceParameters parameters);
+        void ExecuteResource(string resourceName, ResourceParameters parameters, IFrameworkProvider frameworkProvider);
+
 
         /// <summary>
         /// Begins the session access.

@@ -87,11 +87,23 @@ namespace Glimpse.Core.Framework
         /// </value>
         public bool IsInitialized { get; private set; }
 
+
+        private IFrameworkProvider _FrameworkProvider;
+
+        public IFrameworkProvider FrameworkProvider { get {
+            if (_FrameworkProvider == null) {
+                _FrameworkProvider = Configuration.FrameworkProvider;
+            }
+            return _FrameworkProvider;
+        } 
+            private set { _FrameworkProvider = value; }
+        }
+
         private IDictionary<string, TabResult> TabResultsStore
         {
             get
             {
-                var requestStore = Configuration.FrameworkProvider.HttpRequestStore;
+                var requestStore = FrameworkProvider.HttpRequestStore;
                 var result = requestStore.Get<IDictionary<string, TabResult>>(Constants.TabResultsDataStoreKey);
 
                 if (result == null)
@@ -123,7 +135,7 @@ namespace Glimpse.Core.Framework
 
             ExecuteTabs(RuntimeEvent.BeginRequest);
 
-            var requestStore = Configuration.FrameworkProvider.HttpRequestStore;
+            var requestStore = FrameworkProvider.HttpRequestStore;
 
             // Give Request an ID
             var requestId = Guid.NewGuid();
@@ -134,6 +146,18 @@ namespace Glimpse.Core.Framework
             var executionTimer = CreateAndStartGlobalExecutionTimer(requestStore);
 
             Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("Start Request", TimelineMessage.Request).AsTimedMessage(executionTimer.Point()));
+        }
+
+        public void BeginRequest(IFrameworkProvider frameworkProvider) {
+            FrameworkProvider = frameworkProvider;
+            BeginRequest();
+        }
+
+
+        public void EndRequest(IFrameworkProvider frameworkProvider) // TODO: Add PRG support
+        {
+            FrameworkProvider = frameworkProvider;
+            EndRequest();
         }
 
         /// <summary>
@@ -148,7 +172,7 @@ namespace Glimpse.Core.Framework
                 return;
             }
 
-            var frameworkProvider = Configuration.FrameworkProvider;
+            var frameworkProvider = FrameworkProvider;
             var requestStore = frameworkProvider.HttpRequestStore;
 
             var executionTimer = requestStore.Get<ExecutionTimer>(Constants.GlobalTimerKey);
@@ -214,6 +238,10 @@ namespace Glimpse.Core.Framework
         {
             ExecuteResource(Configuration.DefaultResource.Name, ResourceParameters.None());
         }
+         public void ExecuteDefaultResource(IFrameworkProvider frameworkProvider) {
+             FrameworkProvider = frameworkProvider;
+             ExecuteDefaultResource();
+         }
 
         /// <summary>
         /// Begins access to session data.
@@ -263,7 +291,7 @@ namespace Glimpse.Core.Framework
 
             string message;
             var logger = Configuration.Logger;
-            var context = new ResourceResultContext(logger, Configuration.FrameworkProvider, Configuration.Serializer, Configuration.HtmlEncoder);
+            var context = new ResourceResultContext(logger, FrameworkProvider, Configuration.Serializer, Configuration.HtmlEncoder);
             IResourceResult result;
 
             var policy = GetRuntimePolicy(RuntimeEvent.ExecuteResource);
@@ -327,6 +355,12 @@ namespace Glimpse.Core.Framework
             }
         }
 
+
+        public void ExecuteResource(string resourceName, ResourceParameters parameters, IFrameworkProvider frameworkProvider) {
+            FrameworkProvider = frameworkProvider;
+            ExecuteResource(resourceName,parameters);
+        }
+
         /// <summary>
         /// Initializes this instance of the Glimpse runtime.
         /// </summary>
@@ -335,7 +369,7 @@ namespace Glimpse.Core.Framework
         /// </returns>
         public bool Initialize()
         {
-            CreateAndStartGlobalExecutionTimer(Configuration.FrameworkProvider.HttpRequestStore);
+            CreateAndStartGlobalExecutionTimer(FrameworkProvider.HttpRequestStore);
 
             var logger = Configuration.Logger;
             var policy = GetRuntimePolicy(RuntimeEvent.Initialize);
@@ -393,6 +427,8 @@ namespace Glimpse.Core.Framework
             return policy != RuntimePolicy.Off;
         }
 
+
+
         private static UriTemplate SetParameters(UriTemplate template, IEnumerable<KeyValuePair<string, string>> nameValues)
         {
             if (nameValues == null)
@@ -445,7 +481,7 @@ namespace Glimpse.Core.Framework
 
         private IDataStore GetTabStore(string tabName)
         {
-            var requestStore = Configuration.FrameworkProvider.HttpRequestStore;
+            var requestStore = FrameworkProvider.HttpRequestStore;
 
             if (!requestStore.Contains(Constants.TabStorageKey))
             {
@@ -464,7 +500,7 @@ namespace Glimpse.Core.Framework
 
         private void ExecuteTabs(RuntimeEvent runtimeEvent)
         {
-            var runtimeContext = Configuration.FrameworkProvider.RuntimeContext;
+            var runtimeContext = FrameworkProvider.RuntimeContext;
             var frameworkProviderRuntimeContextType = runtimeContext.GetType();
             var messageBroker = Configuration.MessageBroker;
 
@@ -561,7 +597,7 @@ namespace Glimpse.Core.Framework
 
         private RuntimePolicy GetRuntimePolicy(RuntimeEvent runtimeEvent)
         {
-            var frameworkProvider = Configuration.FrameworkProvider;
+            var frameworkProvider = FrameworkProvider;
             var requestStore = frameworkProvider.HttpRequestStore;
             
             // Begin with the lowest policy for this request, or the lowest policy per config
@@ -611,7 +647,7 @@ namespace Glimpse.Core.Framework
 
         private string GenerateScriptTags(Guid requestId)
         {
-            var requestStore = Configuration.FrameworkProvider.HttpRequestStore;
+            var requestStore = FrameworkProvider.HttpRequestStore;
             var runtimePolicy = requestStore.Get<RuntimePolicy>(Constants.RuntimePolicyKey);
             var hasRendered = false;
 
