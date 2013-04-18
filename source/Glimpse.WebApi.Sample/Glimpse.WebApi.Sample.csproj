@@ -78,11 +78,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\source\Glimpse.Core\Glimpse.Core.csproj">
+    <ProjectReference Include="..\Glimpse.Core\Glimpse.Core.csproj">
       <Project>{c1289ce8-3259-41d9-893e-7a4e6f772d30}</Project>
       <Name>Glimpse.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\source\Glimpse.WebApi\Glimpse.WebApi.csproj">
+    <ProjectReference Include="..\Glimpse.WebApi\Glimpse.WebApi.csproj">
       <Project>{8D6152E1-F08B-4244-B794-37697214F73C}</Project>
       <Name>Glimpse.WebApi</Name>
     </ProjectReference>

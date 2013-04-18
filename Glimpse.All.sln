@@ -50,7 +50,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse.Test.Common", "sour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse.WebApi", "source\Glimpse.WebApi\Glimpse.WebApi.csproj", "{8D6152E1-F08B-4244-B794-37697214F73C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse.WebApi.Sample", "Glimpse.WebApi.Sample\Glimpse.WebApi.Sample.csproj", "{2F17B5F5-1ADE-47FA-AE49-F0AAD1BDCD60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse.WebApi.Sample", "source\Glimpse.WebApi.Sample\Glimpse.WebApi.Sample.csproj", "{2F17B5F5-1ADE-47FA-AE49-F0AAD1BDCD60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
