@@ -5,6 +5,7 @@
         internal const string RuntimeKey = "__GlimpseRuntime";
         internal const string LoggerKey = "__GlimpseLogger";
         internal const string FrameworkProviderKey = "__GlimpseFrameworkProvider";
+        internal const string HttpServerStoreKey = "__GlimpseHttpServerStore";
         
     }
 }

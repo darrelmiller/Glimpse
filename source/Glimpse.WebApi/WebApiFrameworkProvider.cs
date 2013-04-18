@@ -17,13 +17,14 @@ namespace Glimpse.WebApi
 
         public WebApiFrameworkProvider(HttpRequestMessage request) {
             this.request = request;
+            HttpServerStore = request.Properties[Constants.HttpServerStoreKey] as IDataStore;
         }
 
         public IDataStore HttpRequestStore { 
              get { return new DictionaryDataStoreAdapter((IDictionary)request.Properties); }
         
         }
-        public IDataStore HttpServerStore { get; private set; }
+        public IDataStore HttpServerStore { get; internal set; }
         public object RuntimeContext { get; private set; }
         public IRequestMetadata RequestMetadata { get; private set; }
 
