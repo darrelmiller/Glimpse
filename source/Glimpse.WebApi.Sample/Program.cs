@@ -18,7 +18,7 @@ namespace Glimpse.WebApi.Sample
             var baseAddress = "http://localhost:8080/";
             var config = new HttpSelfHostConfiguration(baseAddress);
 
-            config.Routes.MapHttpRoute("glimpse", "glimpse.axd",new {controller="glimpse"});
+            config.Routes.MapHttpRoute("glimpse", "glimpse.axd",new {controller="Glimpse"});
             config.Routes.MapHttpRoute("default", "{controller}");
             
             config.MessageHandlers.Add(new GlimpseMessageProcessor());

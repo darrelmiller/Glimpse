@@ -16,16 +16,17 @@ namespace Glimpse.WebApi
         private readonly Factory Factory;
         private readonly DictionaryDataStoreAdapter _HttpServerStore = new DictionaryDataStoreAdapter(new ConcurrentDictionary<string,object>());
         private WebApiServiceLocator providerServiceLocator;
-
+        private ILogger _Logger;
         public GlimpseMessageProcessor()
         {
             providerServiceLocator = new WebApiServiceLocator();
 
             Factory = new Factory(providerServiceLocator);
-            //serviceLocator.Logger = Factory.InstantiateLogger();         
+            providerServiceLocator.Logger = Factory.InstantiateLogger();
+            providerServiceLocator.Store = new ApplicationPersistenceStore(_HttpServerStore);
         }
 
-        internal IGlimpseRuntime GetRuntime(HttpRequestMessage requestMessage)
+        internal IGlimpseRuntime GetRuntime(HttpRequestMessage requestMessage, IFrameworkProvider frameworkProvider)
         {
 
             IGlimpseRuntime runtime;
@@ -45,25 +46,33 @@ namespace Glimpse.WebApi
                 
             }
 
+            if (!runtime.IsInitialized) runtime.InitializeStateless(frameworkProvider);
+
             return runtime;
         }
 
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken) {
-            var runtime = GetRuntime(request);
-
+         
             var frameworkProvider = new WebApiFrameworkProvider(request);
             frameworkProvider.HttpServerStore = _HttpServerStore;
+            frameworkProvider.RequestMetadata = new RequestMetadata(request);
             request.Properties[Constants.FrameworkProviderKey] = frameworkProvider;
-            runtime.BeginRequest(frameworkProvider);
+
+            var runtime = GetRuntime(request, frameworkProvider);
+
+            
+
+            runtime.BeginRequestStateless(frameworkProvider);
 
             return request;
         }
 
         protected override HttpResponseMessage ProcessResponse(HttpResponseMessage response, CancellationToken cancellationToken) {
-            var runtime = GetRuntime(response.RequestMessage);
             var frameworkProvider = response.RequestMessage.Properties[Constants.FrameworkProviderKey] as WebApiFrameworkProvider;
+            var runtime = GetRuntime(response.RequestMessage,frameworkProvider);
+            
             frameworkProvider.Response = response;
-            runtime.EndRequest(frameworkProvider);
+            runtime.EndRequestStateless(frameworkProvider);
 
             return response;
         }

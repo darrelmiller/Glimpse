@@ -11,8 +11,17 @@ namespace Glimpse.WebApi
 {
     public class WebApiServiceLocator : IServiceLocator
     {
+        private ILogger logger;
 
         public HttpRequestMessage InitialRequest { get; set; }
+
+        internal ILogger Logger
+        {
+            get { return logger ?? (logger = new NullLogger()); }
+            set { logger = value; }
+        }
+
+        internal IPersistenceStore Store { get; set; }
 
         public T GetInstance<T>() where T : class
         {
@@ -20,6 +29,15 @@ namespace Glimpse.WebApi
             if (type == typeof(IFrameworkProvider))
             {
                 return new WebApiFrameworkProvider(InitialRequest) as T;
+            }
+
+            if (type == typeof(ILogger))
+            {
+                return Logger as T;
+            }
+            if (type == typeof(IPersistenceStore))
+            {
+                return Store as T;
             }
 
             if (type == typeof(ResourceEndpointConfiguration))

@@ -148,13 +148,13 @@ namespace Glimpse.Core.Framework
             Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("Start Request", TimelineMessage.Request).AsTimedMessage(executionTimer.Point()));
         }
 
-        public void BeginRequest(IFrameworkProvider frameworkProvider) {
+        public void BeginRequestStateless(IFrameworkProvider frameworkProvider) {
             FrameworkProvider = frameworkProvider;
             BeginRequest();
         }
 
 
-        public void EndRequest(IFrameworkProvider frameworkProvider) // TODO: Add PRG support
+        public void EndRequestStateless(IFrameworkProvider frameworkProvider) // TODO: Add PRG support
         {
             FrameworkProvider = frameworkProvider;
             EndRequest();
@@ -427,7 +427,11 @@ namespace Glimpse.Core.Framework
             return policy != RuntimePolicy.Off;
         }
 
-
+        public void InitializeStateless(IFrameworkProvider frameworkProvider)
+        {
+            FrameworkProvider = frameworkProvider;
+            Initialize();
+        }
 
         private static UriTemplate SetParameters(UriTemplate template, IEnumerable<KeyValuePair<string, string>> nameValues)
         {

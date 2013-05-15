@@ -22,7 +22,7 @@ namespace Glimpse.Core.Framework
         /// </remarks>
         void BeginRequest();
 
-        void BeginRequest(IFrameworkProvider frameworkProvider);
+        void BeginRequestStateless(IFrameworkProvider frameworkProvider);
 
         IFrameworkProvider FrameworkProvider { get; }
 
@@ -34,7 +34,7 @@ namespace Glimpse.Core.Framework
         /// with the ASP.NET provider, this is wired to the <c>PostReleaseRequestState</c> method.
         /// </remarks>
         void EndRequest();
-        void EndRequest(IFrameworkProvider frameworkProvider);
+        void EndRequestStateless(IFrameworkProvider frameworkProvider);
 
         /// <summary>
         /// Executes the default resource.
@@ -93,5 +93,7 @@ namespace Glimpse.Core.Framework
         /// <c>Init</c> method.
         /// </remarks>
         bool Initialize();
+
+        void InitializeStateless(IFrameworkProvider frameworkProvider);
     }
 }

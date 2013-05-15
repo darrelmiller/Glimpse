@@ -61,6 +61,7 @@
     <Compile Include="GlimpseMessageProcessor.cs" />
     <Compile Include="PreBodyTagFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestMetadata.cs" />
     <Compile Include="WebApiFrameworkProvider.cs" />
     <Compile Include="WebApiServiceLocator.cs" />
   </ItemGroup>

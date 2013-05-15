@@ -2,9 +2,9 @@
 {
     public static class Constants
     {
-        internal const string RuntimeKey = "__GlimpseRuntime";
+        public const string RuntimeKey = "__GlimpseRuntime";
         internal const string LoggerKey = "__GlimpseLogger";
-        internal const string FrameworkProviderKey = "__GlimpseFrameworkProvider";
+        public const string FrameworkProviderKey = "__GlimpseFrameworkProvider";
         internal const string HttpServerStoreKey = "__GlimpseHttpServerStore";
         
     }
