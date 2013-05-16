@@ -15,7 +15,7 @@ namespace Glimpse.WebApi
     {
         private readonly Factory Factory;
         private readonly DictionaryDataStoreAdapter _HttpServerStore = new DictionaryDataStoreAdapter(new ConcurrentDictionary<string,object>());
-        private WebApiServiceLocator providerServiceLocator;
+        private readonly WebApiServiceLocator providerServiceLocator;
         private ILogger _Logger;
         public GlimpseMessageProcessor()
         {
@@ -53,15 +53,14 @@ namespace Glimpse.WebApi
 
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken) {
          
-            var frameworkProvider = new WebApiFrameworkProvider(request);
-            frameworkProvider.HttpServerStore = _HttpServerStore;
-            frameworkProvider.RequestMetadata = new RequestMetadata(request);
+            var frameworkProvider = new WebApiFrameworkProvider(request)
+                {
+                    HttpServerStore = _HttpServerStore,
+                    RequestMetadata = new RequestMetadata(request)
+                };
             request.Properties[Constants.FrameworkProviderKey] = frameworkProvider;
 
             var runtime = GetRuntime(request, frameworkProvider);
-
-            
-
             runtime.BeginRequestStateless(frameworkProvider);
 
             return request;

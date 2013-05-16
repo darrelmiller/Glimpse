@@ -35,7 +35,7 @@ namespace Glimpse.WebApi
 
         public string ResponseContentType
         {
-            get { return RequestMessage.Content != null && RequestMessage.Content.Headers.ContentType != null ? RequestMessage.Content.Headers.ContentType.ToString() : string.Empty; }
+            get { return ResponseMessage.Content != null && ResponseMessage.Content.Headers.ContentType != null ? ResponseMessage.Content.Headers.ContentType.ToString() : string.Empty; }
         }
 
         public string IpAddress

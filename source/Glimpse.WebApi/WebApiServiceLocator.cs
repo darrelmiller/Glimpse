@@ -53,12 +53,4 @@ namespace Glimpse.WebApi
             return null;
         }
     }
-
-    public class WebApiEndpointConfiguration : ResourceEndpointConfiguration
-    {
-        protected override string GenerateUriTemplate(string resourceName, string baseUri, IEnumerable<ResourceParameterMetadata> parameters, ILogger logger)
-        {
-            return "";  // I have no idea what this does
-        }
-    }
 }

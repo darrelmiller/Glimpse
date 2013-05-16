@@ -33,7 +33,7 @@ namespace Glimpse.WebApi {
                 string bodyCloseWithScript = BodyEnd.Replace(contentInBuffer,
                                                              HtmlSnippet);
 
-                _OutputContent = new StringContent(bodyCloseWithScript,Encoding.GetEncoding(inputContent.Headers.ContentEncoding.FirstOrDefault()));
+                _OutputContent = new StringContent(bodyCloseWithScript,Encoding.GetEncoding(inputContent.Headers.ContentEncoding.FirstOrDefault() ?? "utf-8"));
             }
             else
             {

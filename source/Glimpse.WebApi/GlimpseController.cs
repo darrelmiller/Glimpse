@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Glimpse.Core.Framework;
 
 namespace Glimpse.WebApi
 {
-    public class GlimpseController
+    public class GlimpseController : ApiController
     {
         public HttpResponseMessage Get(HttpRequestMessage request)
         {

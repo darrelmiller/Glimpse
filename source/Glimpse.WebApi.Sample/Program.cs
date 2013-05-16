@@ -15,6 +15,8 @@ namespace Glimpse.WebApi.Sample
     {
         static void Main(string[] args)
         {
+            
+
             var baseAddress = "http://localhost:8080/";
             var config = new HttpSelfHostConfiguration(baseAddress);
 

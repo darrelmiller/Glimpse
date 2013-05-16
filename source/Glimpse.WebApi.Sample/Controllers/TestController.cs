@@ -14,7 +14,7 @@ namespace Glimpse.WebApi.Sample.Controllers
         {
             return new HttpResponseMessage()
                 {
-                    Content =  new StringContent("Hello World")
+                    Content = new StringContent("<html><body>Hello World <a href='test2'>Test2</a></body></html>", Encoding.UTF8, "text/html")
                 };
         } 
     }
