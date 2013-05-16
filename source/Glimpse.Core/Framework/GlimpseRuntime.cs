@@ -127,11 +127,8 @@ namespace Glimpse.Core.Framework
                 throw new GlimpseException(Resources.BeginRequestOutOfOrderRuntimeMethodCall);
             }
 
-            var policy = GetRuntimePolicy(RuntimeEvent.BeginRequest);
-            if (policy.HasFlag(RuntimePolicy.Off))
-            {
+            if (HasOffRuntimePolicy(RuntimeEvent.BeginRequest))
                 return;
-            }
 
             ExecuteTabs(RuntimeEvent.BeginRequest);
 
@@ -145,7 +142,17 @@ namespace Glimpse.Core.Framework
             
             var executionTimer = CreateAndStartGlobalExecutionTimer(requestStore);
 
-            Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("Start Request", TimelineMessage.Request).AsTimedMessage(executionTimer.Point()));
+            Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("Start Request", TimelineCategory.Request).AsTimedMessage(executionTimer.Point()));
+        }
+
+        private bool HasOffRuntimePolicy(RuntimeEvent policyName)
+        {
+            var policy = GetRuntimePolicy(policyName);
+            if (policy.HasFlag(RuntimePolicy.Off))
+            {
+                return true;
+            }
+            return false;
         }
 
         public void BeginRequestStateless(IFrameworkProvider frameworkProvider) {
@@ -166,11 +173,8 @@ namespace Glimpse.Core.Framework
         /// <exception cref="Glimpse.Core.Framework.GlimpseException">Throws an exception if <c>BeginRequest</c> has not yet been called on a given request.</exception>
         public void EndRequest() // TODO: Add PRG support
         {
-            var policy = GetRuntimePolicy(RuntimeEvent.EndRequest);
-            if (policy.HasFlag(RuntimePolicy.Off))
-            {
+            if (HasOffRuntimePolicy(RuntimeEvent.EndRequest))
                 return;
-            }
 
             var frameworkProvider = FrameworkProvider;
             var requestStore = frameworkProvider.HttpRequestStore;
@@ -178,7 +182,7 @@ namespace Glimpse.Core.Framework
             var executionTimer = requestStore.Get<ExecutionTimer>(Constants.GlobalTimerKey);
             if (executionTimer != null)
             {
-                Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("End Request", TimelineMessage.Request).AsTimedMessage(executionTimer.Point()));
+                Configuration.MessageBroker.Publish(new RuntimeMessage().AsSourceMessage(typeof(GlimpseRuntime), MethodInfoBeginRequest).AsTimelineMessage("End Request", TimelineCategory.Request).AsTimedMessage(executionTimer.Point()));
             }
 
             ExecuteTabs(RuntimeEvent.EndRequest);
@@ -197,6 +201,7 @@ namespace Glimpse.Core.Framework
             }
 
             var requestMetadata = frameworkProvider.RequestMetadata;
+            var policy = GetRuntimePolicy(RuntimeEvent.EndRequest);
             if (policy.HasFlag(RuntimePolicy.PersistResults))
             {
                 var persistenceStore = Configuration.PersistenceStore;
@@ -248,11 +253,9 @@ namespace Glimpse.Core.Framework
         /// </summary>
         public void BeginSessionAccess()
         {
-            var policy = GetRuntimePolicy(RuntimeEvent.BeginSessionAccess);
-            if (policy.HasFlag(RuntimePolicy.Off))
-            {
+            if (HasOffRuntimePolicy(RuntimeEvent.BeginSessionAccess))
                 return;
-            }
+           
 
             ExecuteTabs(RuntimeEvent.BeginSessionAccess);
         }
@@ -262,11 +265,8 @@ namespace Glimpse.Core.Framework
         /// </summary>
         public void EndSessionAccess()
         {
-            var policy = GetRuntimePolicy(RuntimeEvent.EndSessionAccess);
-            if (policy.HasFlag(RuntimePolicy.Off))
-            {
+            if (HasOffRuntimePolicy(RuntimeEvent.EndSessionAccess))
                 return;
-            }
 
             ExecuteTabs(RuntimeEvent.EndSessionAccess);
         }
@@ -774,7 +774,7 @@ namespace Glimpse.Core.Framework
             /// <value>
             /// The event category.
             /// </value>
-            public TimelineCategory EventCategory { get; set; }
+            public TimelineCategoryItem EventCategory { get; set; }
 
             /// <summary>
             /// Gets or sets the event sub text.
